@@ -19,8 +19,9 @@ defmodule SummonerWebWeb.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", SummonerWebWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", SummonerWebWeb do
+    pipe_through :api # Use the default browser stack
+
+    get "/threads", ThreadsController, :index
+  end
 end

@@ -1,14 +1,7 @@
-<div class="jumbotron">
-  <h2><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h2>
-  <p class="lead">A productive web framework that<br />does not compromise speed and maintainability.</p>
+<h1>Summoner Alert Threads</h1>
+<div id="router-main">
+  <router-link to="/threads">Threads</router-link>
+  |
+  <router-link to="/hello">Hello</router-link>
+  <router-view></router-view>
 </div>
-
-<%= @message %>
-
-<%= for key <- @threads do %>
-  <div>
-    <a href="https://reddit.com<%= key.permalink %>">
-      <%= key.title %>
-    </a>
-  </div>
-<% end %>

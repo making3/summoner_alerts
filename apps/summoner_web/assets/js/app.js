@@ -13,9 +13,24 @@
 // to also remove its path from "config.paths.watched".
 import "phoenix_html"
 
-// Import local files
-//
-// Local files can be imported directly using relative
-// paths "./socket" or full ones "web/static/js/socket".
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 
-// import socket from "./socket"
+Vue.use(VueRouter)
+
+import Threads from './vue/threads.vue'
+import Hello from './vue/hello.vue'
+
+const routes = [
+  {path: '/', component: Threads},
+  {path: '/threads', component: Threads},
+  {path: '/hello', component: Hello},
+]
+
+const router = new VueRouter({
+  routes
+})
+
+const app = new Vue({
+  router
+}).$mount('#router-main')
