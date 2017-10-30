@@ -8,18 +8,29 @@
       {{ error }}
     </div>
 
-    <div v-if="threads" class="content">
-      <div v-for="thread in threads">
-        <a v-bind:href="thread.permalink">
-          {{ thread.title }}
-        </a>
+    <div v-if="threads" v-for="thread in threads" class="thread">
+      <a v-bind:href="thread.permalink">
+        {{ thread.title }}
+      </a>
+      <div class="thread-tag">
+        <span v-for="tag in thread.tags" class="tag">
+          {{ tag }}
+        </span>
       </div>
     </div>
   </div>
 </template>
 
-
 <style scoped>
+.thread {
+  padding: 10px 0
+}
+.thread-tag {
+  padding-left: 5px;
+  font-size: 10px;
+}
+.tag {
+}
 </style>
 
 <script>
