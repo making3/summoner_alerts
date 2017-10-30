@@ -9,9 +9,15 @@ use Mix.Config
 # back to each application for organization purposes.
 import_config "../apps/*/config/config.exs"
 
-# Sample configuration (overrides the imported configuration above):
-#
-#     config :logger, :console,
-#       level: :info,
-#       format: "$date $time [$level] $metadata$message\n",
-#       metadata: [:user_id]
+config :summoner_backend, SummonerBackend.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  database: "summoner_alerts",
+  username: "summoner_service",
+  password: "dev_password",
+  hostname: "localhost"
+
+config :summoner_backend, ecto_repos: [SummonerBackend.Repo]
+
+config :summoner_backend,
+  subreddit: 'summonerschool',
+  watch_tags_interval: 15 * 1000

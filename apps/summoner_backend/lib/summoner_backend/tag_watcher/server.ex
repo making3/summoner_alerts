@@ -1,9 +1,6 @@
 defmodule SummonerBackend.TagWatcher.Server do
   use GenServer
 
-  # TODO: Change this to summonerschool. AskReddit has more data for testing.
-  @subreddit "askreddit"
-
   # Client
   def start_link do
     GenServer.start_link(__MODULE__, %{})
@@ -11,15 +8,24 @@ defmodule SummonerBackend.TagWatcher.Server do
 
   # Server
   def init(state) do
-    SummonerBackend.Subreddit.Supervisor.add_subreddit(@subreddit)
+    subreddit = get_subreddit()
 
-    fetch_group_tags() |> do_work()
+    SummonerBackend.Subreddit.Supervisor.add_subreddit(subreddit)
+    Application.get_env(:summoner_backend, :subreddit)
+
+    fetch_group_tags() |> do_work(subreddit)
     {:ok, state}
   end
 
+  defp get_subreddit() do
+    Application.get_env(:summoner_backend, :subreddit)
+  end
+
   def handle_info(:work, state) do
+    subreddit = get_subreddit()
+
     # TODO: Only grab new groups or updates?
-    fetch_group_tags() |> do_work()
+    fetch_group_tags() |> do_work(subreddit)
     {:noreply, state}
   end
 
@@ -28,17 +34,16 @@ defmodule SummonerBackend.TagWatcher.Server do
     SummonerBackend.Repo.preload groups, :tags
   end
 
-  defp do_work([]) do
+  defp do_work([], _) do
     schedule_work()
   end
-  defp do_work([head | tail]) do
-    SummonerBackend.Tags.Server.add_group_tags(@subreddit, head.name, head.tags)
-    do_work(tail)
+  defp do_work([head | tail], subreddit) do
+    SummonerBackend.Tags.Server.add_group_tags(subreddit, head.name, head.tags)
+    do_work(tail, subreddit)
   end
 
   defp schedule_work() do
-    # TODO: Create a setting for this timeout
-    Process.send_after(self(), :work, 15 * 1000) # Every 15 seconds
-    # Process.send_after(self(), :work, 5 * 60 * 1000) # Every 5 minutes
+    interval = Application.get_env(:summoner_backend, :watch_tags_interval)
+    Process.send_after(self(), :work, interval)
   end
 end
