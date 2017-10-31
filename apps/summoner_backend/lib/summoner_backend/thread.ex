@@ -17,4 +17,17 @@ defmodule SummonerBackend.Thread do
     |> unique_constraint(:thread_id, name: :threads_thread_id_index)
     |> put_assoc(:tags, params.tags)
   end
+
+  def get_created_utc(thread) do
+    thread
+    |> Map.get("created_utc")
+    |> round()
+    |> convert_unix_to_ecto()
+  end
+
+  defp convert_unix_to_ecto(unix_datetime) do
+    unix_datetime
+    |> DateTime.from_unix!(:second)
+    |> Ecto.DateTime.cast!()
+  end
 end

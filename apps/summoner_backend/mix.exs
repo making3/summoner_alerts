@@ -8,6 +8,7 @@ defmodule SummonerBackend.Mixfile do
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps(),
+      aliases: aliases(),
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -31,6 +32,12 @@ defmodule SummonerBackend.Mixfile do
       {:ecto, "~> 2.1"},
       {:exreddit_tagger, git: "https://github.com/making3/exreddit_tagger.git", branch: "master"},
       {:gproc, "0.3.1"}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: "test --no-start"
     ]
   end
 end

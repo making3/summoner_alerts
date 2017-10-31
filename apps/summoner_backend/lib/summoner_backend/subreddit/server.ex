@@ -43,18 +43,12 @@ defmodule SummonerBackend.Subreddit.Server do
   end
 
   defp save_result({thread, tags}) do
-    created_datetime = thread
-    |> Map.get("created_utc")
-    |> round()
-    |> DateTime.from_unix!(:millisecond)
-    |> Ecto.DateTime.cast!()
-
     sas_thread = Thread.changeset(
       %Thread{},
       %{
         title: Map.get(thread, "title"),
         permalink: Map.get(thread, "permalink"),
-        created_utc: created_datetime,
+        created_utc: Thread.get_created_utc(thread),
         thread_id: Map.get(thread, "id"),
         tags: tags
       }
