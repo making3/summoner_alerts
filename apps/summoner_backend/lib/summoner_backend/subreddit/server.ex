@@ -1,5 +1,7 @@
 defmodule SummonerBackend.Subreddit.Server do
+  require Logger
   use GenServer
+  alias SummonerBackend.Thread
 
   # Client implementation
   def start_link(subreddit) do
@@ -47,16 +49,23 @@ defmodule SummonerBackend.Subreddit.Server do
     |> DateTime.from_unix!(:millisecond)
     |> Ecto.DateTime.cast!()
 
-    sas_thread = %SummonerBackend.Thread{
-      title: Map.get(thread, "title"),
-      permalink: Map.get(thread, "permalink"),
-      created_utc: created_datetime,
-      thread_id: Map.get(thread, "id"),
-      tags: tags
-    }
+    sas_thread = Thread.changeset(
+      %Thread{},
+      %{
+        title: Map.get(thread, "title"),
+        permalink: Map.get(thread, "permalink"),
+        created_utc: created_datetime,
+        thread_id: Map.get(thread, "id"),
+        tags: tags
+      }
+    )
 
-    # TODO: Don't insert if it already exists
-    SummonerBackend.Repo.insert!(sas_thread)
+    case SummonerBackend.Repo.insert(sas_thread) do
+      {:ok, struct} ->
+        struct
+      {:error, changeset} ->
+        Logger.warn fn -> inspect(changeset.errors) end
+    end
   end
 
   defp parse_thread(thread, subreddit) do
