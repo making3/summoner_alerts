@@ -1,6 +1,7 @@
 defmodule SummonerBackend.Thread do
   use Ecto.Schema
   import Ecto.Changeset
+  alias SummonerBackend.Tag
 
   schema "threads" do
     field :thread_id, :string
@@ -16,6 +17,33 @@ defmodule SummonerBackend.Thread do
     |> cast(params, [:thread_id, :title, :permalink, :created_utc])
     |> unique_constraint(:thread_id, name: :threads_thread_id_index)
     |> put_assoc(:tags, params.tags)
+  end
+
+  def get_tags_in_thread(tags, thread) do
+    tag_values = tags
+    |> Map.values()
+    |> List.flatten()
+
+    Tag.get_unique_tags(tag_values)
+    |> find_tags_in_thread(thread)
+    |> MapSet.new()
+    |> Tag.get_group_tags_from_unique(tag_values)
+  end
+
+  defp find_tags_in_thread(tags, thread) do
+    body_result = get_tags_from_map(thread, "selftext", tags)
+    get_tags_from_map(thread, "title", tags)
+    |> Enum.concat(body_result)
+  end
+
+  defp get_tags_from_map(thread, property, tags) do
+    text = thread
+    |> Map.get(property)
+    |> String.downcase()
+
+    Enum.filter(tags, fn tag ->
+      String.contains?(text, tag)
+    end)
   end
 
   def get_created_utc(thread) do
