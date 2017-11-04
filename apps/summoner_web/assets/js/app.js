@@ -19,12 +19,16 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 import Threads from './vue/threads.vue'
+import TagGroup from './vue/tag-groups/show.vue'
+import TagGroups from './vue/tag-groups/index.vue'
 import Hello from './vue/hello.vue'
 
 const routes = [
-  {path: '/', component: Threads},
-  {path: '/threads', component: Threads},
-  {path: '/hello', component: Hello},
+  { path: '/', component: Threads },
+  { path: '/threads', component: Threads },
+  { path: '/tag-groups', component: TagGroups },
+  { path: '/tag-groups/:id', name: 'tag-group', component: TagGroup },
+  { path: '/hello', component: Hello },
 ]
 
 const router = new VueRouter({

@@ -2,8 +2,7 @@ defmodule SummonerWebWeb.ThreadsView do
   use SummonerWebWeb, :view
 
   def render("index.json", %{threads:  threads}) do
-    result = render_many(threads, __MODULE__, "thread.json")
-    result
+    render_many(threads, __MODULE__, "thread.json")
   end
 
   def render("thread.json", %{threads: thread}) do

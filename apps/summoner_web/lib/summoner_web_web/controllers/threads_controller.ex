@@ -6,8 +6,8 @@ defmodule SummonerWebWeb.ThreadsController do
     threads = SummonerBackend.Thread
     |> order_by(desc: :created_utc)
     |> limit(20)
-    |> SummonerBackend.Repo.all
-    threads = SummonerBackend.Repo.preload threads, :tags
-    render conn, threads: threads
+    |> SummonerBackend.Repo.all()
+    |> SummonerBackend.Repo.preload(:tags)
+    render(conn, threads: threads)
   end
 end

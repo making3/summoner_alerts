@@ -57,7 +57,6 @@
           if (err) {
             this.error = err.toString()
           } else {
-            console.log('threads: ', threads.data);
             this.threads = threads
           }
           this.loading = false

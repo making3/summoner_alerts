@@ -23,5 +23,7 @@ defmodule SummonerWebWeb.Router do
     pipe_through :api # Use the default browser stack
 
     get "/threads", ThreadsController, :index
+
+    resources "/tag-groups", TagGroupsController, except: [:new, :update, :edit]
   end
 end

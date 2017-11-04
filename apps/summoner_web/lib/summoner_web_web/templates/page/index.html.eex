@@ -3,5 +3,7 @@
   <router-link to="/threads">Threads</router-link>
   |
   <router-link to="/hello">Hello</router-link>
+  |
+  <router-link to="/tag-groups">Tag Groups</router-link>
   <router-view></router-view>
 </div>
