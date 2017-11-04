@@ -24,6 +24,7 @@ defmodule SummonerWebWeb.Router do
 
     get "/threads", ThreadsController, :index
 
+    resources "/tags", TagsController, only: [:create, :delete]
     resources "/tag-groups", TagGroupsController, except: [:new, :update, :edit]
   end
 end

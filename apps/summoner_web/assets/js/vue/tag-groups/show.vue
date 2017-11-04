@@ -14,8 +14,14 @@
       </h3>
 
       <ul v-if="tagGroup.tags" v-for="tag in tagGroup.tags">
-        <li>{{ tag }}</li>
+        <li>
+          {{ tag.name }}
+          <button v-on:click="deleteTag(tag.id)">Delete</button>
+        </li>
       </ul>
+
+      <input type="text" v-model="name" placeholder="Tag name"></input>
+      <button v-on:click="createTag()">Create Tag</button>
     </div>
   </div>
 </template>
@@ -54,6 +60,35 @@
         axios.get(`/api/tag-groups/${id}`)
           .then(response => callback(null, response.data))
           .catch(callback);
+      },
+      createTag () {
+        if (!this.name) {
+          this.error = "Tag requires a name";
+          return;
+        }
+        axios.post('/api/tags', {
+          name: this.name,
+          group_id: this.tagGroup.id
+        })
+          .then(response => {
+            this.name = "";
+            this.tagGroup.tags.push(response.data);
+          })
+          .catch(error => {
+            this.error = error.toString();
+          });
+      },
+      deleteTag(id) {
+        axios.delete(`/api/tags/${id}`)
+          .then(() => {
+            const tagIndex = this.tagGroup.tags.findIndex((t) =>
+              t.id === id
+            );
+            this.tagGroup.tags.splice(tagIndex, 1);
+          })
+          .catch(error => {
+            this.error = error.toString();
+          });
       }
     }
   }
