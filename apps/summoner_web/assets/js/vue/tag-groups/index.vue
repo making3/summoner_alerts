@@ -15,7 +15,7 @@
           <button v-on:click="deleteGroup(group.id)">Delete</button>
         </li>
       </ul>
-      <input type="text" v-model="name" placeholder="Group name"></input>
+      <input type="text" v-model="name" placeholder="Group name" v-on:keyup.13="createGroup()"></input>
       <button v-on:click="createGroup()">Create Group</button>
     </div>
   </div>

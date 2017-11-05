@@ -20,7 +20,7 @@
         </li>
       </ul>
 
-      <input type="text" v-model="name" placeholder="Tag name"></input>
+      <input type="text" v-model="name" placeholder="Tag name" v-on:keyup.13="createTag()"></input>
       <button v-on:click="createTag()">Create Tag</button>
     </div>
   </div>
