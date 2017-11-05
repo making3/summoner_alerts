@@ -8,7 +8,8 @@ defmodule SummonerWebWeb.TagGroupsView do
   def render("tag_groups.json", %{tag_groups: tag_group}) do
     %{
       id: tag_group.id,
-      name: tag_group.name
+      name: tag_group.name,
+      color: tag_group.color
     }
   end
 
@@ -25,10 +26,11 @@ defmodule SummonerWebWeb.TagGroupsView do
     }
   end
 
-  def render("create.json", %{tag_group: tag_group}) do
+  def render(_, %{tag_group: tag_group}) do
     %{
       id: tag_group.id,
-      name: tag_group.name
+      name: tag_group.name,
+      color: tag_group.color
     }
   end
 end

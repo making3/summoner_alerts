@@ -11,11 +11,22 @@
     <div v-if="tagGroups">
       <ul v-for="group in tagGroups">
         <li>
-          <router-link :to="{ name: 'tag-group', params: { id: group.id } }">{{ group.name }}</router-link>
-          <button v-on:click="deleteGroup(group.id)">Delete</button>
+          <span v-if="groupBeingEdited && groupBeingEdited.id === group.id">
+            <input type="text" v-model="newName" placeholder="Group name" v-on:keyup.13="updateGroup(group.id)"></input>
+            <input type="text" v-model="newColor" placeholder="Color" v-on:keyup.13="updateGroup(group.id)"></input>
+            <button v-on:click="updateGroup(group.id)">Update</button>
+            <button v-on:click="cancelEdit(group.id)">Cancel</button>
+          </span>
+          <span v-else>
+            <router-link :to="{ name: 'tag-group', params: { id: group.id } }">{{ group.name }}</router-link>
+            <span v-bind:style="{ color: group.color }">{{ group.color }}</span>
+            <button v-on:click="editGroup(group.id)">Edit</button>
+            <button v-on:click="deleteGroup(group.id)">Delete</button>
+          </span>
         </li>
       </ul>
       <input type="text" v-model="name" placeholder="Group name" v-on:keyup.13="createGroup()"></input>
+      <input type="text" v-model="color" placeholder="Color" v-on:keyup.13="createGroup()"></input>
       <button v-on:click="createGroup()">Create Group</button>
     </div>
   </div>
@@ -28,8 +39,12 @@
     data () {
       return {
         name: '',
+        color: '',
         loading: false,
         tagGroups: null,
+        newName: '',
+        newColor: '',
+        groupBeingEdited: null,
         error: null
       }
     },
@@ -66,15 +81,46 @@
 
         // TODO: Put a loading indicator
         axios.post('/api/tag-groups', {
-          name: this.name
+          name: this.name,
+          color: this.color
         })
           .then((tagGroup) => {
-            this.tagGroups.push(tagGroup.data)
-            this.name = ''
+            this.tagGroups.push(tagGroup.data);
+            this.name = '';
+            this.color = '';
           })
           .catch(error => {
             this.error = error.toString();
           })
+      },
+      editGroup (id) {
+        const group = this.tagGroups.find(tg => tg.id === id);
+        this.newName = group.name;
+        this.newColor = group.color;
+        this.groupBeingEdited = group;
+      },
+      cancelEdit (id) {
+        const group = this.tagGroups.find(tg => tg.id === id);
+        this.newName = '';
+        this.newColor = '';
+        this.groupBeingEdited = null;
+      },
+      updateGroup (id) {
+        const group = this.tagGroups.find(tg => tg.id === id);
+        axios.put(`/api/tag-groups/${group.id}`, {
+          name: this.newName,
+          color: this.newColor
+        })
+          .then((response) => {
+            group.name = response.data.name;
+            group.color = response.data.color;
+            this.groupBeingEdited = null;
+            group.newName = '';
+            group.newColor = '';
+          })
+          .catch(error => {
+            this.error = error.toString();
+          });
       },
       deleteGroup(id) {
         axios.delete(`/api/tag-groups/${id}`)
