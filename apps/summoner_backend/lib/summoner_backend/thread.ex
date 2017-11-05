@@ -11,7 +11,6 @@ defmodule SummonerBackend.Thread do
     many_to_many :tags, SummonerBackend.Tag, join_through: "thread_tags"
   end
 
-  # TODO: Insert thread_tags if it doesn't exist, even if the thread exists
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:thread_id, :title, :permalink, :created_utc])

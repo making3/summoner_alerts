@@ -1,6 +1,7 @@
 defmodule SummonerBackend.Subreddit.Server do
   require Logger
   use GenServer
+  import Ecto.Query
   alias SummonerBackend.Thread
   alias SummonerBackend.Tags
 
@@ -44,6 +45,25 @@ defmodule SummonerBackend.Subreddit.Server do
   end
 
   defp save_result({thread, tags}) do
+    thread_id = Map.get(thread, "id")
+
+    case get_existing_thread(thread_id) do
+      nil ->
+        insert_thread({thread, tags})
+      db_thread ->
+        update_thread_tags({db_thread, tags})
+    end
+  end
+
+  defp get_existing_thread(thread_id) do
+    Thread
+    |> Ecto.Query.where(thread_id: ^thread_id)
+    |> Ecto.Query.first()
+    |> SummonerBackend.Repo.one()
+    |> SummonerBackend.Repo.preload(:tags)
+  end
+
+  defp insert_thread({thread, tags}) do
     sas_thread = Thread.changeset(
       %Thread{},
       %{
@@ -56,6 +76,20 @@ defmodule SummonerBackend.Subreddit.Server do
     )
 
     case SummonerBackend.Repo.insert(sas_thread) do
+      {:ok, struct} ->
+        struct
+      {:error, changeset} ->
+        Logger.warn fn -> inspect(changeset.errors) end
+    end
+  end
+
+  defp update_thread_tags({db_thread, tags}) do
+    sas_thread = Thread.changeset(
+      db_thread,
+      %{tags: tags}
+    )
+
+    case SummonerBackend.Repo.update(sas_thread) do
       {:ok, struct} ->
         struct
       {:error, changeset} ->
