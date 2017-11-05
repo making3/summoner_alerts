@@ -1,5 +1,7 @@
 defmodule SummonerBackend.Tag do
   use Ecto.Schema
+  alias SummonerBackend.TagGroup
+
   schema "tags" do
     field :name, :string
     belongs_to :tag_group, TagGroup

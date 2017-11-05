@@ -1,13 +1,16 @@
 defmodule SummonerWebWeb.ThreadsController do
   use SummonerWebWeb, :controller
   import Ecto.Query
+  alias SummonerBackend.Tag
+  alias SummonerBackend.Thread
+  alias SummonerBackend.Repo
 
   def index(conn, _params) do
-    threads = SummonerBackend.Thread
+    threads = Thread
     |> order_by(desc: :created_utc)
     |> limit(20)
-    |> SummonerBackend.Repo.all()
-    |> SummonerBackend.Repo.preload(:tags)
+    |> Repo.all()
+    |> Repo.preload([tags: [:tag_group]])
     render(conn, threads: threads)
   end
 end

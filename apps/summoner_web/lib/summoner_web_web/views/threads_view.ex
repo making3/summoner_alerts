@@ -10,7 +10,13 @@ defmodule SummonerWebWeb.ThreadsView do
       id: thread.id,
       permalink: "https://reddit.com" <> thread.permalink,
       title: thread.title,
-      tags: Enum.map(thread.tags, fn tag -> tag.name end)
+      tags: Enum.map(thread.tags, fn tag ->
+        %{
+          id: tag.id,
+          name: tag.name,
+          color: tag.tag_group.color
+        }
+      end)
     }
   end
 end

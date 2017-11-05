@@ -14,7 +14,9 @@
       </a>
       <div class="thread-tag">
         <span v-for="tag in thread.tags" class="tag">
-          {{ tag }}
+          <span v-bind:style="{ color: tag.color }">
+            {{ tag.name }}
+          </span>
         </span>
       </div>
     </div>
