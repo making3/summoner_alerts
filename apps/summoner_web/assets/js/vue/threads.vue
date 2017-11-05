@@ -13,8 +13,12 @@
         {{ thread.title }}
       </a>
       <div>
-        <span v-bind:style="{ color: tag.color }" v-for="tag in thread.tags" class="thread-tag">
-          {{ tag.name }}
+        <span v-bind:style="{ color: tag.color, 'background-color': tag.bgColor }" v-for="tag in thread.tags" class="thread-tag">
+          <router-link :to="{ name: 'threads', query: {
+            tags: $route.query.tags ? $route.query.tags + ',' + tag.name : tag.name }
+          }">
+            {{ tag.name }}
+          </router-link>
         </span>
       </div>
     </div>
@@ -57,13 +61,21 @@
           if (err) {
             this.error = err.toString()
           } else {
+            const tags = this.$route.query.tags;
+            if (tags && tags.length > 0) {
+              for (const thread of threads) {
+                for (const tag of thread.tags) {
+                  tag.bgColor = tags.indexOf(tag.name) > -1 ? 'yellow' : 'white';
+                }
+              }
+            }
             this.threads = threads
           }
           this.loading = false
         })
       },
       getThreads (callback) {
-        axios.get('/api/threads')
+        axios.get('/api/threads?tags=' + (this.$route.query.tags || ''))
           .then(response => callback(null, response.data))
           .catch(e => callback(e))
       }

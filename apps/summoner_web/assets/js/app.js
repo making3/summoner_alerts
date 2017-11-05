@@ -25,7 +25,7 @@ import Hello from './vue/hello.vue'
 
 const routes = [
   { path: '/', component: Threads },
-  { path: '/threads', component: Threads },
+  { path: '/threads', name: 'threads', component: Threads },
   { path: '/tag-groups', component: TagGroups },
   { path: '/tag-groups/:id', name: 'tag-group', component: TagGroup },
   { path: '/hello', component: Hello },
