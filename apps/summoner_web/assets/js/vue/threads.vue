@@ -9,14 +9,12 @@
     </div>
 
     <div v-if="threads" v-for="thread in threads" class="thread">
-      <a v-bind:href="thread.permalink">
+      <a target="_blank" v-bind:href="thread.permalink">
         {{ thread.title }}
       </a>
-      <div class="thread-tag">
-        <span v-for="tag in thread.tags" class="tag">
-          <span v-bind:style="{ color: tag.color }">
-            {{ tag.name }}
-          </span>
+      <div>
+        <span v-bind:style="{ color: tag.color }" v-for="tag in thread.tags" class="thread-tag">
+          {{ tag.name }}
         </span>
       </div>
     </div>
