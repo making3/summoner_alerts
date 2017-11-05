@@ -31,9 +31,9 @@ defmodule SummonerBackend.Thread do
   end
 
   defp find_tags_in_thread(tags, thread) do
-    body_result = get_tags_from_map(thread, "selftext", tags)
-    get_tags_from_map(thread, "title", tags)
-    |> Enum.concat(body_result)
+    tags_in_body = get_tags_from_map(thread, "selftext", tags)
+    tags_in_title = get_tags_from_map(thread, "title", tags)
+    Enum.concat(tags_in_body, tags_in_title)
   end
 
   defp get_tags_from_map(thread, property, tags) do
@@ -42,7 +42,7 @@ defmodule SummonerBackend.Thread do
     |> String.downcase()
 
     Enum.filter(tags, fn tag ->
-      String.contains?(text, tag)
+      String.contains?(text, String.downcase(tag))
     end)
   end
 

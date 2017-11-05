@@ -12,7 +12,7 @@ defmodule SummonerBackend.ThreadTest do
   test "get_tags_in_thread" do
     group_tags = %{
       "first": [
-        %{name: "foo"},
+        %{name: "Foo"},
         %{name: "tag1"},
         %{name: "many tag"},
         %{name: "other"},
@@ -28,7 +28,7 @@ defmodule SummonerBackend.ThreadTest do
 
     actual = Thread.get_tags_in_thread(group_tags, thread)
     expected = [
-      %{name: "foo"},
+      %{name: "Foo"},
       %{name: "many tag"},
       %{name: "found"}
     ]
